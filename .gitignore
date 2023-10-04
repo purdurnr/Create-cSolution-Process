@@ -1,0 +1,11 @@
+.clangd
+Create-cSolution-Process.md
+example.cbuild-idx.yml
+example.debug+EVKB-RT1050.cbuild.yml
+example.debug+EVKB-RT1050.cprj
+example.Release+EVKB-RT1050.cbuild.yml
+example.Release+EVKB-RT1050.cprj
+EVKB-RT1050/*
+lwip/*
+RTE/*
+tmp/*
