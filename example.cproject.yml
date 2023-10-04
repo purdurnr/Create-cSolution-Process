@@ -1,0 +1,223 @@
+---
+project:
+  description: Example Project that uses NXP i.MX RT1050 with lwip, FreeRTOS, and mbedtls to establish a secure http connection.
+
+  linker:
+    - script: C:/GIT/memfault-pack-nxp/examples/armgcc/evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug.ld
+      for-compiler: GCC
+      for-context:
+        - ".debug"
+        - ".Release"
+
+  packs:
+    # - pack: Memfault::FirmwareSDK@1.1.2  
+    - pack: NXP::MIMXRT1052_DFP@13.1.0
+    - pack: NXP::EVKB-IMXRT1050_BSP@13.1.0
+    - pack: NXP::MBEDTLS
+    - pack: NXP::FREERTOS-KERNEL  
+    - pack: ARM::CMSIS
+    
+  add-path:
+    - ./source
+    - ./lwip/port
+    - ./lwip/port/arch
+    - ./lwip/src
+    - ./lwip/src/include
+    - ./lwip/src/include/compat
+    - ./lwip/src/core
+    - ./lwip/src/core/ipv6
+    - ./lwip/src/include/lwip/priv
+  # - ./armgcc    
+    - ./board
+
+  components:
+    - component: ARM::CMSIS:CORE@5.6.0
+
+    - component: NXP::Device:SDK Drivers:cache
+    - component: NXP::Device:SDK Drivers:clock
+    - component: NXP::Device:SDK Drivers:common
+    - component: NXP::Device:SDK Drivers:dcp
+    - component: NXP::Device:SDK Drivers:enet
+    - component: NXP::Device:SDK Drivers:gpio
+    - component: NXP::Device:SDK Drivers:iomuxc
+    - component: NXP::Device:SDK Drivers:lpuart
+    - component: NXP::Device:SDK Drivers:trng
+    # - component: Device:Startup
+
+    - component: NXP::Device:CMSIS:MIMXRT1052_system
+    - component: NXP::Device:CMSIS:MIMXRT1052_header
+
+
+    - component: NXP::Device:SDK Drivers:lpuart_adapter
+    - component: NXP::Device:SDK Drivers:mdio-common
+    - component: NXP::Device:SDK Drivers:mdio-enet 
+    - component: NXP::Device:SDK Drivers:lists
+    - component: NXP::Device:SDK Drivers:phy-common
+    - component: NXP::Device:SDK Drivers:phy-device-ksz8081 
+    - component: NXP::Device:SDK Utilities:debug_console
+    # define:
+    # - SDK_DEBUGCONSOLE : 1
+    # - __MCUXPRESSO
+    - component: NXP::Device:SDK Utilities:serial_manager
+    - component: NXP::Device:SDK Utilities:serial_manager_uart
+    - component: NXP::Device:SDK Utilities:serial_manager_swo
+    - component: NXP::Device:SDK Utilities:serial_manager_virtual
+
+    # Added at the end with only _fstat, _write, _isatty errors in the libc_nano 
+    - component: NXP::Device:SDK Drivers:xip_device
+    - component: NXP::Device:SDK Utilities:assert
+    - component: NXP::Board Support:SDK Drivers:evkbimxrt1050
+
+    - component: NXP::Security&Mbed_TLS:mbedTLS library:template
+    - component: NXP::Security&Mbed_TLS:mbedTLS library:ksdk
+    - component: NXP::Security&Mbed_TLS:mbedTLS library:mbedtls
+    #   define:
+    #     - MBEDTLS_CONFIG_FILE: \"mbedtls_config_client.h\"
+
+    - component: NXP::RTOS&FreeRTOS NXP:Core
+    - component: NXP::RTOS&FreeRTOS NXP:freertos template
+    - component: NXP::RTOS&FreeRTOS NXP:TAD extension
+    - component: NXP::RTOS&FreeRTOS NXP:Heap&Heap_4
+
+  define:
+    # Moved to global Defines for this cProject
+    - CPU_MIMXRT1052DVL68
+    - CPU_MIMXRT1052DVL68_cm7
+    - _POSIX_SOURCE
+    - XIP_BOOT_HEADER_DCD_ENABLE : 1
+    - SKIP_SYSCLK_INIT
+    - DATA_SECTION_IS_CACHEABLE : 1
+    - SDK_DEBUGCONSOLE : 1
+    - XIP_EXTERNAL_FLASH : 1
+    - XIP_BOOT_HEADER_ENABLE : 1
+    - FSL_FEATURE_PHYKSZ8081_USERMII50M_MODE
+    - FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL : 1
+    - PRINTF_ADVANCED_ENABLE : 1
+    - USE_RTOS : 1
+    - LWIP_DNS : 1
+    - LWIP_DHCP : 1
+    - MBEDTLS_CONFIG_FILE: \"mbedtls_config_client.h\"
+    - ENET_RXBUFF_NUM : 14
+    - LWIP_DISABLE_PBUF_POOL_SIZE_SANITY_CHECKS : 1
+    - SERIAL_PORT_TYPE_UART : 1
+    - SDK_OS_FREE_RTOS
+    - MCUXPRESSO_SDK
+    - CR_INTEGER_PRINTF
+    - __MCUXPRESSO
+    - __USE_CMSIS
+    - DEBUG
+    - __NEWLIB__
+
+  groups:
+    - group: source
+      files:
+        - file: ./source/FreeRTOSConfig.h
+        - file: ./source/lwip_httpscli_mbedTLS_freertos.c
+        - file: ./source/lwipopts.h
+        - file: ./source/mbedtls_config_client.h
+
+        - file: ./source/httpsclient.c
+        - file: ./source/httpsclient.h
+        - file: source/startup_mimxrt1052.c
+
+    - group: board
+      files:
+        - file: board/pin_mux.c
+        - file: board/pin_mux.h
+        - file: board/board.c
+        - file: board/board.h
+        - file: board/clock_config.c
+        - file: board/clock_config.h
+        - file: board/dcd.c
+        - file: board/dcd.h
+
+    - group: lwip-src
+      files:
+        - file: ./lwip/src/api/api_lib.c
+        - file: ./lwip/src/api/api_msg.c
+        - file: ./lwip/src/api/err.c
+        - file: ./lwip/src/api/if_api.c
+        - file: ./lwip/src/api/netbuf.c
+        - file: ./lwip/src/api/netdb.c
+        - file: ./lwip/src/api/netifapi.c
+        - file: ./lwip/src/api/sockets.c
+        - file: ./lwip/src/api/tcpip.c
+
+        - file: ./lwip/src/core/altcp_alloc.c
+        - file: ./lwip/src/core/altcp_tcp.c
+        - file: ./lwip/src/core/altcp.c
+        - file: ./lwip/src/core/def.c
+        - file: ./lwip/src/core/dns.c
+        - file: ./lwip/src/core/inet_chksum.c
+        - file: ./lwip/src/core/init.c
+        - file: ./lwip/src/core/ip.c
+        - file: ./lwip/src/core/mem.c
+        - file: ./lwip/src/core/memp.c
+        - file: ./lwip/src/core/netif.c
+        - file: ./lwip/src/core/pbuf.c
+        - file: ./lwip/src/core/raw.c
+        - file: ./lwip/src/core/stats.c
+        - file: ./lwip/src/core/sys.c
+        - file: ./lwip/src/core/tcp_in.c
+        - file: ./lwip/src/core/tcp_out.c
+        - file: ./lwip/src/core/tcp.c
+        - file: ./lwip/src/core/timeouts.c
+        - file: ./lwip/src/core/udp.c
+
+        - file: ./lwip/src/core/ipv4/acd.c
+        - file: ./lwip/src/core/ipv4/autoip.c
+        - file: ./lwip/src/core/ipv4/dhcp.c
+        - file: ./lwip/src/core/ipv4/etharp.c
+        - file: ./lwip/src/core/ipv4/icmp.c
+        - file: ./lwip/src/core/ipv4/igmp.c
+        - file: ./lwip/src/core/ipv4/ip4_addr.c
+        - file: ./lwip/src/core/ipv4/ip4_frag.c
+        - file: ./lwip/src/core/ipv4/ip4.c
+
+        - file: ./lwip/src/core/ipv6/dhcp6.c
+        - file: ./lwip/src/core/ipv6/ethip6.c
+        - file: ./lwip/src/core/ipv6/icmp6.c
+        - file: ./lwip/src/core/ipv6/inet6.c
+        - file: ./lwip/src/core/ipv6/ip6_addr.c
+        - file: ./lwip/src/core/ipv6/ip6_frag.c
+        - file: ./lwip/src/core/ipv6/ip6.c
+        - file: ./lwip/src/core/ipv6/mld6.c
+        - file: ./lwip/src/core/ipv6/nd6.c
+
+        - file: ./lwip/src/netif/ppp/auth.c
+        - file: ./lwip/src/netif/ppp/ccp.c
+        - file: ./lwip/src/netif/ppp/chap-md5.c
+        - file: ./lwip/src/netif/ppp/chap_ms.c
+        - file: ./lwip/src/netif/ppp/demand.c
+        - file: ./lwip/src/netif/ppp/eap.c
+        - file: ./lwip/src/netif/ppp/eui64.c
+        - file: ./lwip/src/netif/ppp/fsm.c
+        - file: ./lwip/src/netif/ppp/ipcp.c
+        - file: ./lwip/src/netif/ppp/ipv6cp.c
+        - file: ./lwip/src/netif/ppp/lcp.c
+        - file: ./lwip/src/netif/ppp/lwip_ecp.c
+        - file: ./lwip/src/netif/ppp/magic.c
+        - file: ./lwip/src/netif/ppp/mppe.c
+        - file: ./lwip/src/netif/ppp/multilink.c
+        - file: ./lwip/src/netif/ppp/ppp.c
+        - file: ./lwip/src/netif/ppp/pppapi.c
+        - file: ./lwip/src/netif/ppp/pppcrypt.c
+        - file: ./lwip/src/netif/ppp/pppoe.c
+        - file: ./lwip/src/netif/ppp/pppol2tp.c
+        - file: ./lwip/src/netif/ppp/pppos.c
+        - file: ./lwip/src/netif/ppp/upap.c
+        - file: ./lwip/src/netif/ppp/utils.c
+        - file: ./lwip/src/netif/ppp/vj.c
+
+        - file: ./lwip/src/netif/bridgeif.c
+        - file: ./lwip/src/netif/bridgeif_fdb.c
+        - file: ./lwip/src/netif/ethernet.c
+        - file: ./lwip/src/netif/lowpan6.c
+        - file: ./lwip/src/netif/lowpan6_ble.c
+        - file: ./lwip/src/netif/lowpan6_common.c
+        - file: ./lwip/src/netif/slipif.c
+        - file: ./lwip/src/netif/zepif.c
+
+        - file: ./lwip/port/enet_ethernetif.c
+        - file: ./lwip/port/enet_ethernetif_kinetis.c
+        - file: ./lwip/port/sys_arch.c

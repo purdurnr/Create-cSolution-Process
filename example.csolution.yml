@@ -1,0 +1,33 @@
+---
+solution:
+  created-for: cmsis-toolbox@2.0.0
+  cdefault:
+
+  packs:
+    # - pack: Memfault::FirmwareSDK@1.1.2  
+    - pack: NXP::MIMXRT1052_DFP@13.1.0
+    - pack: NXP::EVKB-IMXRT1050_BSP@13.1.0
+    - pack: NXP::MBEDTLS
+    - pack: NXP::FREERTOS-KERNEL  
+    - pack: ARM::CMSIS
+
+  target-types:
+  - type: EVKB-RT1050
+    device: NXP::MIMXRT1052DVL6B
+    # board: NXP::EVKB-IMXRT1050
+    compiler: GCC
+
+  output-dirs:
+    outdir: "./$TargetType$/$BuildType$"
+
+  build-types:
+  - type: debug
+    debug: on       # puts in -g3 mode
+    optimize: none
+
+  - type: Release 
+    debug: off
+    optimize: balanced
+
+  projects:
+  - project: example.cproject.yml
