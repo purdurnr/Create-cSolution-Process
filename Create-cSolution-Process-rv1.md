@@ -1,33 +1,48 @@
 # <center> How to Share Example Projects using cSolution </center>
-## <center> 9/25/2023 </center>
 
-This document captures the process to create a cSolution project from an existing eclipse based project.
+This document captures the process to create a cSolution project from an existing eclipse based project.  
 The [cSolution examples and templates](https://github.com/Open-CMSIS-Pack/csolution-examples) provided by the Open-CMSIS-Pack group can also be referenced when getting started.  
 The steps from these examples, when appropriate, will be referenced below.
 
-## cSolution based on NXP LWIP Ping FreeRTOS Example
-The introduction of Open-CMSIS-Packs will simplify the customer experience.  The pack will properly setup the example with the required software.  The standard is supported for importing projects into NXP supported IDEs: ARM MDK, IAR EWARM and VS Code.
+## Create cSolution Projects based on Working NXP Examples
+The introduction of Open-CMSIS-Packs will simplify the customer experience.  The pack will properly setup the example with the required software.  The standard is supported by various IDEs as a way to import NXP projects: ARM MDK, IAR EWARM and Microsoft VS Code.
 
-The following was how a cSolution version of this example was generated from a known working example provided for NXP MCUXpresso IDE eclipse tools.
+The following shows how a cSolution version of an example was generated from a known working example in the NXP MCUXpresso IDE eclipse tools.  
 
 ### 1.0 cSolution Example Workspace
-cSolution examples can be provided within an Open-CMSIS-Pack.  A consistent folder structure should be adopted to help people navigate the location of content within the pack examples.  
-The following folder structure is created when following the process outlined in this document:
+cSolution examples can be delivered within an Open-CMSIS-Pack.  A consistent folder structure should be adopted to help people locate the example content within the pack.  
+The following folder structure is used in the process outlined in this document:
+
+```mermaid
+graph Pack;
+  pack-->middleware;
+  pack-->examples;
+  examples-->1st_example;
+  examples-->2nd_example;
+  1st_example-->armgcc;
+  1st_example-->board;
+  1st_example-->doc;
+  1st_example-->source;
+  2nd_example-->armgcc;
+  2nd_example-->board;
+  2nd_example-->doc;
+  2nd_example-->source;
+```
+
+
 ```yaml
 CMSIS-PACK:
 +---examples
-|   +---1st_example
+|   +---2nd_example
 |       +---armgcc
 |       |---board
 |       |---doc
-|       |---source
-|       \---Temp
+|       \---source
 |   \---2nd_example
 |       +---armgcc
 |       |---board
 |       |---doc
-|       |---source
-|       \---Temp
+|       \---source
 \---middleware
 ```
 To get started, create a workspace with an /examples folder.  
@@ -44,7 +59,8 @@ The filenames for csolution and cproject can be changed to be:
 - examplename.csolution.yml
 - examplename.cproject.yml
 
-The files have general description fields that can be updated for the given example.
+The files have general description fields that can be updated for the given example.  
+
 ---
 
 ### 3.0 Gather Project Information
@@ -435,7 +451,9 @@ The following steps are followed to have the examples included in a pack descrip
 
 ------
 
-### Addendum 1 Locking Versions of Software Components
+## Addendums to Creating cSolution Examples
+
+### 1.0 Locking Versions of Software Components
 The process described above created a cSolution project with Software Components added from CMSIS-Packs.  
 CMSIS-Packs are published by the diffferent pack Vendors based on their different release schedules.  
 This can cause issues with an example pulling new versions of software that introduces changes/errors.
@@ -454,13 +472,13 @@ This can help the author control components with multiple versions.
 The author can reference a working project to determine which version to select.  
 The author can review the Release Notes for Versions for projects that reference other sources of the SDK software.  
 The NXP DFP Pack [Version History](https://www.keil.arm.com/packs/mimxrt1062_dfp-nxp/versions/) includes the relationship in versions between the Archive SDK releases and the CMSIS-Pack releases.  
-The version numbers differ: 
-![Pack Version History](./images/cSolution-Pack-VersionHistory.png)
+The version numbers differ:   
+![Pack Version History](./images/cSolution-Pack-VersionHistory.png)  
 This information allows the author to create a project that may have been based on v2.13.0 of the MCUXpresso SDK.  
 As shown above, the author would use the @16.0.0 to use the Pack based on the software include din MCUXpresso SDK v2.13.0.
 
 
-### Addendum 2 Include Software Not Available in Packs
+### 2.0 Include Software Not Available in Packs
 Some example projects will require software that cannot be included through referencing a CMSIS-Pack.  
 In these cases, the source code can be included in the example folder.  
 
