@@ -435,9 +435,37 @@ The following steps are followed to have the examples included in a pack descrip
 
 ------
 
-### 6.0 Add Software Not Available in Packs
-The lwip source referenced in the example requires an older version of the source.  This source can be included by adding the code to the pack folder and including the folder in the project path.
-The files must be copied from the valid working project and placed in a folder /lwip within the pack /example/lwip.  
+### Addendum 1 Locking Versions of Software Components
+The process described above created a cSolution project with Software Components added from CMSIS-Packs.  
+CMSIS-Packs are published by the diffferent pack Vendors based on their different release schedules.  
+This can cause issues with an example pulling new versions of software that introduces changes/errors.
+
+It is ideal for an example to be delivered to the user in a tested known-good state.
+cSolution allows an author to include version information to restrict what versions are used for the example.  
+
+In [Adding Packs](#54-adding-project-specific-packs) and [Adding Components](#55-specifying-software-components-from-packs) the author can include an '@' symbol followed by the desired version of the pack or component.
+```yaml
+- pack: NXP::MIMXRT1062_DFP@16.0.0
+- component: ARM::CMSIS:CORE@5.6.0
+```
+These changes will force the cBuild tool to use the specific Pack and/or component.
+This can help the author control components with multiple versions.
+
+The author can reference a working project to determine which version to select.  
+The author can review the Release Notes for Versions for projects that reference other sources of the SDK software.  
+The NXP DFP Pack [Version History](https://www.keil.arm.com/packs/mimxrt1062_dfp-nxp/versions/) includes the relationship in versions between the Archive SDK releases and the CMSIS-Pack releases.  
+The version numbers differ: 
+![Pack Version History](./images/cSolution-Pack-VersionHistory.png)
+This information allows the author to create a project that may have been based on v2.13.0 of the MCUXpresso SDK.  
+As shown above, the author would use the @16.0.0 to use the Pack based on the software include din MCUXpresso SDK v2.13.0.
+
+
+### Addendum 2 Include Software Not Available in Packs
+Some example projects will require software that cannot be included through referencing a CMSIS-Pack.  
+In these cases, the source code can be included in the example folder.  
+
+In a different example, the lwip content required an older version of the source.  This source was included by adding the code to the pack folder and including the folder in the project path.
+In these cases, the files must be copied from the valid working project and placed in a folder /lwip within the pack /example/lwip.  
 ![lwipsourcefiles](./images/training-getstarted-Eclipse-lwip-source.png)
 
 The cProject allows the build tools to search the included folder by adding to a list of paths.
@@ -550,284 +578,3 @@ The following is added to the cProject under the groups category to allow the re
         - file: ./lwip/port/sys_arch.c
   ```
 The author is able to add non-pack software to a project by copying the required source files into a folder, adding the folders to the path, and listing the necesary files.
-
-In addition to the lwip library files, there are 2 lwip configuration files included in a folder /lwip_httpscli_mbedTLS.  For simplicity, these 2 files were copied over into the /examples/source folder.  
-
-##### Adding the remaining missing components
-The same process is followed to identify and add the remaining software components.
-The following are the errors with their corresponding pack components:
-```yaml
-"fsl_debug_console.h": No such file or directory    ==>   NXP::Device:SDK Utilities:debug_console  
-
-"fsl_component_serial_manager.h": No such file or directory   ==>   NXP::Device:SDK Utilities:serial_manager
-
-mbedtls/entropy.h: No such file or directory     ==>    - pack: NXP::MBEDTLS
-mbedtls/entropy.h: No such file or directory     ==>    - component: NXP::Security&Mbed_TLS:mbedTLS library:template
-mbedtls/entropy.h: No such file or directory     ==>    - component: NXP::Security&Mbed_TLS:mbedTLS library:ksdk
-mbedtls/entropy.h: No such file or directory     ==>    - component: NXP::Security&Mbed_TLS:mbedTLS library:mbedtls 
-
-
-#error SERIAL_PORT_TYPE_UART      ==>   shows that a #define is required for debug_console
-#error SERIAL_PORT_TYPE_UART      ==>   The project definitions can be taken from the eclipse project settings
-#error SERIAL_PORT_TYPE_UART      ==>   The settings include - SERIAL_PORT_TYPE_UART : 1
-
-```
-
-When adding the lwIP components, the csolution convert will mention that a component is required for the Device:SDK Drivers:phy-common
-
-When adding the debug_console component, the cbuild output has an error related to the SERIAL_PORT_TYPE definitions.  The Eclipse project can be used to extract the required project global definitions.  
-The definitions are added to the cProject under the category of **define:**  
-The following are all of the global definitions pulled from the eclipse project:  
-```yaml
-  define:
-    # Moved to global Defines for this cProject
-    - CPU_MIMXRT1052DVL68
-    - CPU_MIMXRT1052DVL68_cm7
-    - _POSIX_SOURCE
-    - XIP_BOOT_HEADER_DCD_ENABLE : 1
-    - SKIP_SYSCLK_INIT
-    - DATA_SECTION_IS_CACHEABLE : 1
-    - SDK_DEBUGCONSOLE : 1
-    - XIP_EXTERNAL_FLASH : 1
-    - XIP_BOOT_HEADER_ENABLE : 1
-    - FSL_FEATURE_PHYKSZ8081_USERMII50M_MODE
-    - FSL_SDK_ENABLE_DRIVER_CACHE_CONTROL : 1
-    - PRINTF_ADVANCED_ENABLE : 1
-    - USE_RTOS : 1
-    - LWIP_DNS : 1
-    - LWIP_DHCP : 1
-    - MBEDTLS_CONFIG_FILE: \"mbedtls_config_client.h\"
-    - ENET_RXBUFF_NUM : 14
-    - LWIP_DISABLE_PBUF_POOL_SIZE_SANITY_CHECKS : 1
-    - SERIAL_PORT_TYPE_UART : 1
-    - SDK_OS_FREE_RTOS
-    - MCUXPRESSO_SDK
-    - CR_INTEGER_PRINTF
-    - __MCUXPRESSO
-    - __USE_CMSIS
-    - DEBUG
-    - __NEWLIB__
-```
-
-After adding defines, the missing files continue:
-
-```yaml
-fsl_adapter_uart.h: No such file or directory   ==>       NXP::Device:SDK Drivers:lpuart_adapter
-```
-Note the difference in the naming convention for this component.
-The way to discover the difference is to use the csolution command to list the available components.  You will see this listed as an available component:
-```yaml
-C:\ csolution list components .\example.csolution.yml
-
-The following is found in the list of available components.
-
-NXP::Device:SDK Drivers:lpuart_adapter@1.0.0 (NXP::MIMXRT1052_DFP@17.0.0)
-```
-After adding lpuart_adapter, the missing files continue:
-
-```yaml
-fatal error: pin_mux.h: No such file or directory
-```
-This error introduces the requirement to have the NXP board files.  These are all provided in the example project under the /board folder.
-These should be copied into the /example/board folder and the path and files added to the cProject groups.
-
-The new board group is added as follows:
-```yaml
-    - group: board
-      files:
-        - file: board/pin_mux.c
-        - file: board/pin_mux.h
-        - file: board/board.c
-        - file: board/board.h
-        - file: board/clock_config.c
-        - file: board/clock_config.h
-        - file: board/dcd.c
-        - file: board/dcd.h
-```
-
-The process continues after board files are added:
-
-```yaml
-fatal error: fsl_phyksz8081.h: No such file or directory  ==>   NXP::Device:SDK Drivers:phy-device-ksz8081 
-
-fatal error: fsl_enet_mdio.h: No such file or directory   ==>   NXP::Device:SDK Drivers:mdio-enet 
-```
-
-The mdio-enet driver is only found in an older version of the NXP SDK.  It was provided in the SDK that included the working example.  
-This can be fixed by specifying that the pack use the Device Drivers from a prior release.  The one associated with SDK v2.10.0  
-The Pack release notes identify which versions are related.  13.1.0 is shown as the Pack release that contains source from the v2.10.0 SDK
-
-The packs at the top of the cProject and cSolution should be **restricted** to pull from the 13.1.0 release.  The following inforces this requirement:  
-```yaml
-  packs:
-    - pack: NXP::MIMXRT1052_DFP@13.1.0
-    - pack: NXP::EVKB-IMXRT1050_BSP@13.1.0
-```
-Once this is added, the csolution convert identifies that mdio-enet requires Device:SDK Drivers:mdio-common.
-Also, csolution checks dependency and identifies the following dependencies:
-```yaml
-NXP::Device:SDK Utilities:serial_manager@1.0.1
-  accept Device:SDK Utilities:serial_manager_swo
-  accept Device:SDK Utilities:serial_manager_uart
-  accept Device:SDK Utilities:serial_manager_virtual
-```
-
-After adding serial_manager components,
-require Device:SDK Drivers:lists
-
-At this point the cProject builds with all of the components required in the included source files.
-The next step in the CMSIS cBuild Tool is the Linking process.
-
-### cBuild Linking Process
-The following section identifies the steps required to properly link a project
-
-#### Adding Project Linker File
-The cProject requires a linker file to be added to the list of requirements.
-
-The linker file is specific for the armgcc build tools.  The file can be located in the Debug folder of the working Eclipse project.
-The Memfault example project requires 3 linker files.
-
-![EclipseLinkerFiles](./images/training-getstarted-EclipseLinkerFiles.png)
-
-The primary linker file has the filename ending in **"...Debug.ld"**  
-The other 2 linker files are listed in the primary file as includes.
-These three file should be copied into an /examples/armgcc folder.
-
-The files are then referenced in the cProject file using the path.
->__NOTE:__ The cProject Linker tool failed to take indirect paths.  To quickly resolve this issue I used absolute paths.  The Path issue can likely be resolved.
-
-```yaml
-  linker:
-    - script: C:/GIT/Create-cSolution-Process/examples/armgcc/evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug.ld
-      for-compiler: GCC
-      for-context:
-        - ".debug"
-        - ".Release"
-```
-
-At this point the Linking process generates new errors based on undefined references to Freertos functions: 'pvPortMalloc', 'pvPortFree', 'vTaskDelete', 'vTaskList'.  
-
-I practice cleaning the build artifacts when unexpected results occur.
-```yaml
-cbuild -C .\example.csolution.yml
-```
-
-### Add Flags for Project Build/Assemble/Link
-I still had errors that were unexplained.  So I added the known Build, Assembly and Linker flags from the working Eclipse project.
-
-These were added into a cDefault.yml file added to the same folder as the cProject and cSolution files.  The file allows the user to control the tool command parameters passed.
-
-To get the proper flags, the Project Properties from Eclipse can be copied.
-1st, copy "All Options" located under the C/C++ Build -- Settings window for the the MCU C Compiler Tool Settings:
-![CompilerSettings](./images/training-getstarted-Eclipse-ProjectCompilerSettings.png)
-
-2nd, copy "All Options" located under the C/C++ Build -- Settings window for the the MCU Assembler Tool Settings:
-![AssemblerSettings](./images/training-getstarted-Eclipse-ProjectAssemblerSettings.png)
-
-3rd, copy "All Options" located under the C/C++ Build -- Settings window for the the MCU Linker Tool Settings:
-![LinkerSettings](./images/training-getstarted-Eclipse-ProjectLinkerSettings.png)
-
-The values can be pasted into the cDefault file.  
-Use the editor to remove the extra characters:  
--I : These are used in eclipse to specify paths.  The cProject file draws the paths from the included pack and the paths list.  
--Map : This defines the Map location.  This is replaced by the explicit linker files.
-
-You should be left with a list of options that contain:  
--D : Define values can be added following this prefix  
--f : parameters for compiler  
--m : Cortex-M specific parameters  
--g : Debug verbosity.  g0 removes most debug content; g3 adds most debug content  
--c :  
--specs : identifies library used.  Newlib, Newlib.nano...  
-
-Here are the values extracted from the Memfault example project.  (The defines were extracted in the same manner and pasted into the cProject file)  
-They are added to the cDefault.yml file in the following list:  
-```yaml
-    - for-compiler: GCC
-      C:
-        - -std=gnu99
-        - -O0 
-        - -fno-common 
-        - -g3
-        - -fomit-frame-pointer 
-        # - -c 
-        - -ffunction-sections 
-        - -fdata-sections 
-        - -ffreestanding 
-        - -fno-builtin 
-        - -fmerge-constants 
-        #- -fmacro-prefix-map="$(<D)/"= 
-        - -mcpu=cortex-m7 
-        - -mfpu=fpv5-d16 
-        - -mfloat-abi=hard 
-        - -mthumb 
-        - -fstack-usage 
-        - -specs=nano.specs
-      ASM:
-        - -c
-        - -x assembler-with-cpp
-        #- -I"$(<D)/"\source"
-        - g3
-        - -mcpu=cortex-m7
-        - -mfpu=fpv5-d16
-        - -mfloat-abi=hard
-        - -mthumb 
-        - -specs=nano.specs
-
-      Link:
-        - -nostdlib     #No startup or default libs
-        - -Wl,--gc-sections 
-        - -Wl,-print-memory-usage 
-        - -Wl,--sort-section=alignment 
-        # - -Wl,--cref 
-        # - -Map="evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault.map"
-        - -mcpu=cortex-m7 
-        - -mfpu=fpv5-d16 
-        - -mfloat-abi=hard 
-        - -mthumb 
-        #- -T evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug.ld
-
-```
-
-After the cDefault file is updated with tool options, the project cBuild completes and binary files are generated for the project.
-
-----
-
-
-
-##### components:
-Missing components can be discovered using the CLI command
-``` yaml
-csolution projectname.csolution.yml
-```
-The output of this command identifies missing include files.  The missing include files can be resolved by adding the correct component from a pack.  The pack component name is often contains the **name** from the missing include file.  You can search for the name in the pack tools.  The tools will provide the result with required Cclass, Cgroup information.  That allows the component to be added to the list in cProject as:
-``` yaml
-components:
-- component: Cclass:Cgroup:Csub&Cvariant
-```
-Here is an example of to resolve a missing component:
-
-
-
-
-### 2.0 Add files from working project
-We want to differentiate between files available from packs and those source files specific to the example.  These files are added to the cProject under files category.
-
-
-### 3.0 Add additional Packs required for project
-The project description and title indicate support is required for LWIP, mbedTLS, and FreeRTOS.  
-NXP provides packs for these components.  They can be found by using a couple sources: 
-- VS Code CMSIS extension.  Software Components view
-- Eclipse CMSIS-Pack Manager Tool :  uVision, MCUXpresso IDE, IAR EWARM 
-- [www.kiel.arm.com](https://www.keil.arm.com/) : able to search for Device, Board, and Software Packs
-
-  
-This is represented in the cSolution as
-
-
-
-    
-
-
-
-
