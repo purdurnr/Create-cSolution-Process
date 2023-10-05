@@ -1,14 +1,18 @@
-# <center>Create cSolution Projects based on Working NXP Examples</center>
+# <center>Creating cSolution Projects based on Working NXP Examples</center>
 
-This document captures the process to create a cSolution project from an existing MCUXpresso IDE eclipse based project.  
+This document captures a process to create a cSolution project from an existing MCUXpresso IDE eclipse based project.    
 The Open-CMSIS-Pack group provides [cSolution examples and templates](https://github.com/Open-CMSIS-Pack/csolution-examples) that can be referenced when getting started.  
-These examples will be referenced when appropriate.
 
-The growing adoption of the Open-CMSIS-Pack standard is simplifying the embedded software development experience.  Open-CMSIS-Packs help properly setup example projects with the required software.  Many popular IDEs support the standard as a way to import NXP projects: ARM MDK, IAR EWARM and Microsoft VS Code.
+The growing adoption of the Open-CMSIS-Pack standard is simplifying the embedded software development experience.  Open-CMSIS-Packs are supported by multiple IDEs to import example projects with the proper software and settings.  This provides developers a common software experience across ARM MDK, IAR EWARM and Microsoft VS Code.  
+
+cSolution examples can be delivered within an Open-CMSIS-Pack.  Popular IDEs have tools pack management tools that highlight these examples to help customers evaluate the middleware in Open-CMSIS-Packs.  
+
+>__NOTE__ The existing MCUXpresso IDE project should be built for each of the desired build configurations.
 
 ## 1.0 Example Workspace
-cSolution examples can be delivered within an Open-CMSIS-Pack.  A consistent folder structure should be adopted to help people locate the example content within the pack.  
-The following folder structure is used in the process outlined in this document:
+A workspace folder should be created to store the cSolution example projects.
+A consistent folder structure should be adopted to help organize the example content in a pack.  
+The following folder structure is used for the process outlined in this document:
 
 ```yaml
 CMSIS-PACK:
@@ -26,7 +30,7 @@ CMSIS-PACK:
 \---middleware
 ```
 >__ACTION:__
->To get started, create a workspace with an /examples folder.  
+>To get started, create a workspace with an /examples base folder.  
 >Replace the "1st_example" folder with the name of the example being converted to a cSolution format.
 
 ## 2.0 Project Template Files
@@ -35,24 +39,31 @@ The process starts with putting required template files in the root of the indiv
 - **[cproject.yml](https://github.com/Open-CMSIS-Pack/csolution-examples/blob/main/Templates/Simple/MyName.cproject.yml)** : contains list of software components from packs and defines source files
 - **[cdefault.yml](cdefault.yml)** : contains list of tool settings for different compilers
 
-These files are updated to include information to describe the project.  
+These files are updated to include information that details the project.  
+
 The filenames for csolution and cproject can be changed to be:
 - examplename.csolution.yml
 - examplename.cproject.yml
 
-The files have general description fields that can be updated for the given example.  
+The cProject file has a project description that should be updated for the selected example.  
+```yaml
+project:
+  description: Example Project that uses NXP i.MX RT1050 with lwip, FreeRTOS, and mbedtls to establish a secure http connection.
+```
+>__ACTION:__
+>Update the cproject.yml file to include project description.  This can be found in the readme.txt included with MCUXpresso projects.
 
 ---
 
 ## 3.0 Gather Project Information
-Having a working project provides a resource for gathering the required information for creating a cSolution project.  The information can be viewed in the UI of the MCUXpresso IDE, or copied from the Eclipse .cproject file.
+Having a pre-built working project in MCUXpresso IDE provides a resource for gathering the required information for creating a cSolution project.  The information can be viewed in the UI of the MCUXpresso IDE, or copied from the Eclipse .cproject file.  The settings collected below are specific to a single build configuration.  **The process must be repeated for each build configuration** (i.e. debug, release...)  The UI and .cproject file have different sections for each.
 
 ### 3.1 Defined Symbols
-The Eclipse .cproject file has a section that lists all of the MCU C Compiler defined Symbols.  Open the .cproject file found in the root folder of the working Eclipse project.  Search for "Defined Symbols" to jump to the start an organized list of the defined symbols.  
+The MCUXpresso IDE eclipse .cproject file has a section that lists all of the MCU C Compiler defined Symbols.  Open the .cproject file found in the root folder of the working Eclipse project.  Search for "Defined Symbols" and jump to an organized list of the defined symbols.  
 
 ![DefinedSymbols](./images/training-getstarted-DefinedSymbols-cProject.png)
 
-Copy the list of values into the new cSolution project.  The values are pasted in the cProject.yml file under defines:  
+Copy the list of values into the cProject.yml file in the new cSolution project.  The values are pasted under defines:  
 The cSolution schema requires that the equal '=' characters are replaced with colon ':' characters.   
 The Defined Symbols in the cProject.yml file should resemble the following:  
 ```yaml
@@ -78,12 +89,13 @@ The Defined Symbols in the cProject.yml file should resemble the following:
     - DEBUG
 ```
 ### 3.2 Linker Options
-The Eclipse .cproject file has a section that lists all the optional Linker flags.  Search for "c.link.option.other" to jump to the start of the listed values.
+The MCUXpresso IDE eclipse .cproject file has a section that lists the included Linker options.  Search for "c.link.option.other" to jump to the start of the listed values.
 
 ![LinkerOptions](./images/training-getstarted-LinkerFlags-cProject.png)
 
-These linker values are copied and pasted into the new cDefault.yml file.  This file allows linker settings to be set as default for different build tools across all projects.  
-Some of the linker values require a prefix to run properly by the cBuild tools.  Add a -Wl before the captured flags.  The flags for this project are shown below:  
+Copy the list of linker values into the cDefault.yml file in the new cSolution project.  This file specifies default tool settings for different build tools across all the included projects.  
+Some of the linker values from eclipse require a prefix to run properly by the cBuild tools.  Add a -Wl before the captured flags.  
+The Linker flags in the cDefault.yml file should resemble the following: 
 ```yaml
       Link:
         - -Wl,--gc-sections
@@ -95,14 +107,18 @@ Some of the linker values require a prefix to run properly by the cBuild tools. 
 >__NOTE__: The -Map and --cref flags are not used with the cBuild tools.  They are included but commented out.
 
 ### 3.3 Compiler and Assembler Options
-The settings for the Compiler and Assembler are easier to extract using the Project Settings UI in MCUXpresso IDE.
+The Comiler and Assembler options for a cSolution project are listed in the cDefault.yml.  
+The settings for the Compiler and Assembler can be extracted using the Project Settings UI in MCUXpresso IDE.  
+
 Access the settings under Project Explorer, right click on the desired project and select Properties.  
 Click on C/C++ Build option in the left pane of the properties window.  
 Then click on Settings to display and copy the Tool Settings for the Compiler, Assembler and Linker.  
 
-Compiler options can be copied as shown in the following image:  
+Compiler options can be copied from the box highlighted in the following image:  
 ![CompilerOptions](./images/training-getstarted-Eclipse-ProjectCompilerSettings-Ping.png)  
-The extracted compiler options can be cleaned up by removing prefixes and eliminating the -I and -D options handled by Paths and Defines.
+
+The extracted compiler options can be cleaned up by removing prefixes and eliminating the -I and -D options handled elsewhere by Paths and Defines.  
+The resulting Compiler options added to cDefault.yml for the example project should resemble: 
 ```yaml
     - for-compiler: GCC
       C:
@@ -123,10 +139,11 @@ The extracted compiler options can be cleaned up by removing prefixes and elimin
         - -fstack-usage
 ```
 
-Assembler options can be copied as shown in the following image:  
+Assembler options can be copied from the box highlighted in the following image:  
 ![AssemblerOptions](./images/training-getstarted-Eclipse-ProjectAssemblerSettings-Ping.png)
 
-The -I include and -D symbol defines can be removed.  The resulting Assembly options for the example project are:  
+The -I include and -D symbol defines can be removed.  
+The resulting Assembly options added to cDefault.yml for the example project should resemble:  
 ```yaml
       ASM:
         - -c 
@@ -137,32 +154,45 @@ The -I include and -D symbol defines can be removed.  The resulting Assembly opt
         - -mfloat-abi=hard 
         - -mthumb 
 ```
+
+>__ACTION:__
+>Update the cProject.yml file to include the Defined Symbols  
+>Update the cDefault.yml file to include the Compiler, Assembler and Linker options
+
 ---
 
 ## 4.0 Updating the cSolution File
-The device and board information can be found from the existing MCUXpresso Eclipse project.
+A cSolution project includes the **cSolution.yml** file to provide the highest level of information required for the example project(s).  
+The file includes the required software packs, target-types, build-types and projects.  This allows a single project to have multiple target devices/boards.  However, the file also allows the use case where multiple related/common projects can leverage the same cSolution settings.  
 
-![EclipseProjectInfo](./images/training-getstarted-EclipseProjectInfo-Ping.png)
+### 4.1 Device and Board information
+The required device and board information can be found from the existing MCUXpresso IDE eclipse project.
 
-The csolution is updated to specify packs required to support the device and board:  
+![MCUXpresso IDE Project Info](./images/training-getstarted-EclipseProjectInfo-Ping.png)
+
+The cSolution.yml is updated to specify packs required to support the device and board:  
 - Board = EVK-IMXRT1060
 - Device = MIMXRT1062xxxxA
 
 NXP provides Board Support Packs with a '_BSP' suffix.  
 NXP provides Device Support Packs with a "_DFP' suffix.  
-Packs are listed with NXP as the first value to indicate the vendor. 
+Open-CMSIS-Packs are identified with **NXP::** as the first value to indicate when NXP is the vendor of the pack. 
 
 ``` yaml
 packs:
 - pack: NXP::EVK-IMXRT1060_BSP
 - pack: NXP::MIMXRT1062_DFP
 ```
+### 4.2 Target, Build Types and Projects
+The cSolution file also details the target and build types for the project(s).  
 
-The cSolution file also details the target and build types for the project.  
-The **target-types** provide a unique identifier to distinguish between projects for different devices, boards and/or compilers.  This requires the target device to be listed with the package value.  
-The **build-types** are typically Debug and Release versions of the same project.  Changing the debug components and the build optimizations.  
-The **projects** lists the projects for the specified targets and builds.  
-For this new cSolution example project adding the desired target and build types to the cSolution file should look like the following:
+- **target-types** provide a unique identifier to distinguish between projects for different devices, boards and/or compilers.    This requires the target device to be listed with the package value.  This "package" value can also be found in the MCUXpresso IDE Project info.
+
+- **build-types** are typically Debug and Release versions of the same project.  Changing the debug components and the build optimizations.  
+
+- **projects** lists the projects for the specified targets and builds.  This is where the name of the new cProject.yml file is listed.
+
+Adding the desired target and build types to the cSolution.yml file should resemble the following:
 ``` yaml
   target-types:
   - type: EVK-RT1060
@@ -182,20 +212,26 @@ For this new cSolution example project adding the desired target and build types
   projects:
   - project: example.cproject.yml
 ```
+>__ACTION:__
+>Update the cSolution.yml file to include the Device, Board, Target and Build information  
+>Update the cSolution.yml file to include the Project(s) with the cProject.yml filename
 
 ---
 
 ## 5.0 Updating the cProject File
-The cproject.yml file required for the cSolution example format must be updated to include source files and software components.  
+A cSolution project includes the **cProject.yml** file to specify the source files and software components for a given project.  
 
 ### 5.1 Adding Source Files
-Source files are added to the project under the groups: category.  
-These files are provided in the pack under the /example/source folder.  
-The given Eclipse example clearly lists the source files.  
+The MCUXpresso IDE eclipse UI clearly lists the source files required for the example.  
 
 ![EclipseSourceFiles](./images/training-getstarted-EclipseSourceFiles-Ping.png)
 
-They are added to the new cProject.yml as follows:
+These files are delivered in the pack under the /example/source folder.  They are copied to this folder by the author of the cSolution project.
+
+Source files are listed in the cProject.yml file under the groups: category.  
+A group of files is given a unique name to help organize them within the project.  The name "source" is an obvious choice for this group of files.  
+
+They are added to the cProject.yml file as follows:
 ```yaml 
   groups:
     - group: source
@@ -205,18 +241,24 @@ They are added to the new cProject.yml as follows:
         - file: ./source/lwipopts.h
         - file: ./source/semihost_hardfault.h
 ```
-The location of the source files must also be added to the cProject.yml under the paths: group
+The location of the source files must also be added to the cProject.yml under the add-path: category.  
+This information is used with the Build tools to communicate locations to search for files in the project.  
 ```yaml
   add-path:
     - ./source
 ```
 >__ACTION:__
->***Copy the source files for your example into the /source folder in the workspace.***
+>Copy the source files for the example into the /source folder in the workspace.  
+>Add list of source files to cProject.yml file; Add ./source to project path
 
 ### 5.2 Adding Board Files
-Board files are another set of files that need to be added to the cProject.yml.    
-Similar to the source files, they are provided in the pack under the /example/board folder.  
+Board files are a required set of files that need to be added to the cProject.yml.  They are listed in MCUXpresso IDE eclipse UI under the /board folder.
+
 ![EclipseBoardFiles](./images/training-getstarted-EclipseBoardFiles-Ping.png)
+
+Similar to the source files, they are delivered in the pack under the /example/board folder.  They are copied to this folder by the author of the cSolution project.
+
+The name "board" is selected to identify this group of files.  
 
 They are added to the cProject.yml as follows:
 ```yaml
@@ -231,22 +273,24 @@ They are added to the cProject.yml as follows:
         - file: board/dcd.c
         - file: board/dcd.h
 ```
-The location of the board files must also be added to the cProject.yml under the paths: group
+The location of the board files must also be added to the cProject.yml under the add-path: category.
+This information is used with the Build tools to communicate locations to search for files in the project.  
 ```yaml
   add-path:
     - ./source
     - ./board
 ```
 >__ACTION:__
->***Copy the board files for the example into the /board folder in the workspace.***
+>Copy the board files for the example into the /board folder in the workspace.
+>>Add list of board files to cProject.yml file; Add ./board to project path
 
 ### 5.3 Adding Project Linker Files
-This cSolution project requires linker files. The cProject.yml file identifies the files required for the different toolchains.  
-This example needs to provide the linker files for the armgcc tools. (MCUXpresso VS Code tool support)  
-The example can be expanded to provide support for other IDES.  They may require different sources to support different linker tools.
+A cSolution project requires linker files. The cProject.yml file identifies the linker files required for supported toolchains.  
+This example needs to provide the linker files for the armgcc tools. (Default support in MCUXpresso for VS Code)  
+The example can be expanded to provide support for other IDES/Compilers.  They may require different linker files to be associated to the specific tool.
 
-These files can be found in the working Eclipse project.  
-They are generated and stored in the different build folders shown in the Project Explorer. (i.e. Typically /Debug and /Release)  
+These files can be found in the working Eclipse project.  They are generated when the project succesfully builds each configuration.  The linker files include a suffix to identify the build configuration. (i.e. _Debug.ld)  
+They are stored in different build folders shown in the Project Explorer. (i.e. /Debug and /Release)  
 
 ![LinkerFiles](./images/training-getstarted-EclipseLinkerFiles-Ping.png)  
 
@@ -264,7 +308,7 @@ The primary linker file is added to the top of the cProject file:
       for-context:
         - ".Release"        
 ```
-The location of the linker files must also be added to the cProject.yml under the paths: group  
+The location of the linker files must also be added to the cProject.yml under the add-path: category  
 ```yaml
   add-path:
     - ./source
@@ -274,7 +318,7 @@ The location of the linker files must also be added to the cProject.yml under th
 
 The primary file _Debug.ld is generated with INCLUDE statements for the _library and _memory files.  
 These INCLUDE statements must be commented out or deleted.  These two linker files are added with Linker flag options in the cDefault.yml file.
-The following shows how the additional linker scripts for Debug and Release build configurations are included in the cDefault.yml.  
+The following shows how the additional linker scripts for Debug and Release build configurations are included:  
 ```yaml
       Link:
         - -nostdlib     #No startup or default libs
@@ -287,11 +331,14 @@ The following shows how the additional linker scripts for Debug and Release buil
         - -T./armgcc/evkmimxrt1060_lwip_ping_freertos_Release_library.ld
         - -T./armgcc/evkmimxrt1060_lwip_ping_freertos_Release_memory.ld      
 ```
->__ACTION:__
->***Copy the linker files for the example into the /armgcc folder in the workspace.***
+>__ACTION:__  
+>Build the desired build configurations for the working project in MCUXpresso IDE to generate the linker files  
+>Copy the linker files for the example into the /armgcc folder in the workspace  
+>Add the linker file to cProject.yml file; Add ./armgcc to project path  
+>Add the location of the additional linker scripts to the cDefault.yml file using Linker flags
 
 ### 5.4 Adding Project Specific Packs 
-The cProject file can add additional packs for the tools to use for a given project.  They can be the same list of packs as listed in the cSolution or contain additional packs or be used to specify a particular version to be used.  
+The cProject.yml file can include an additional list of packs.  The list can be used to include packs unique to a project or a specific version of a pack.  
 For the example project, the application and title indicate some of the additional required packs.  
 - **CMSIS** : The NXP microcontroller family is built on CMSIS standard products.  The CMSIS library of drivers are used by the NXP projects.  A CMSIS folder is listed in the Project Explorer view of our example project.  This pack provides those files. 
 - **lwip** : lwip is an open source software.  NXP provides a pack that contains some modifications specific to NXP microcontrollers.  There is another lwip pack provided by ARM.  The author should verify that the correct lwip pack is being used to deliver the necesary files.  
@@ -307,24 +354,26 @@ These packs are added to the cProject.yml as follows:
     - pack: NXP::FREERTOS-KERNEL  
 ```
 ### 5.5 Adding Software Components
-Adding software components is the most involved process in migrating a project to the cSolution format.  The libraries and source files must be captured in the cSolution lists.  Another complexity is to verify that the correct source and version of the library is being provided by the pack.  
-The cSolution requires the components are identified by the following values:
+Adding software components is the most involved process in migrating a project to the cSolution format.  The libraries and source files must be captured by the list of software components in the cProject.yml file.  Another complexity is to verify that the correct source and version of the code is being provided by the listed pack.  
+The cSolution project format requires that software components are identified by the using the following list of values:
 ```yaml
 - component: Device:Startup&Baremetal
 - component: Cclass:Cgroup:Csub&Cvariant
 ```
-A device specific software component can be specified by using the first value **Device**.  The CMSIS tools replace Device with the value defined by the cSolution target.  These software components are found in the corresponding Device Family Pack (DFP).  
+A device specific software component can be specified by using the first value **Device**.  The CMSIS tools associate the Device software components with the device defined as the cSolution target.  The Device software components are then found in the corresponding Device Family Pack (DFP).  
 
 A generic software component can be specified by a **Cclass** and **Cgroup**.  This allows software components to be organized by a taxonomy.  This can help organize common software components.  
+
 But how do you determine the correct values?
 
 #### Eclipse Project Explorer
-If the project exists in Eclipse format, you can use the Eclipse Project Explorer view to identify most of the component names.
+You can use the MCUXpresso IDE eclipse Project Explorer UI to identify most of the software component names.  
 NXP has kept a consistent naming convention between file names and software components.  The following image shows an example of the location and a few of the component names.
 
 ![EclipseProjectComponents](./images/training-getstarted-EclipseProjectComponents-Ping.png)
 
-This first pass of the project helps the author add the following components to the cProject file.  They are grouped by the associated folders found in the eclipse project.
+This first pass of the project helps the author add the following to the **components** list provided in the cProject.yml file.  
+For this example, the list is organized by the associated folders in the MCUXpresso IDE eclipse project.
 ``` yaml
   components:
     - component: ARM::CMSIS:CORE@5.6.0
@@ -361,17 +410,23 @@ This first pass of the project helps the author add the following components to 
     - component: NXP::Device:SDK Utilities:str
 ```
 
-Notice that no LWIP components are added.  This is an example of where a software component can not be determined from existing information.  The CMSIS Tools provide a way to determine what components are available from the included packs.
+Notice that no LWIP components are listed.  This was done to show an example where the software components can not be determined from existing information.  
+
+
+#### CMSIS Toolbox Pack Tools
+The CMSIS Tools provide an easy way to determine what additional components are available from the included packs.  
 
 ```yaml
 C:\ csolution list components .\example.csolution.yml
 ```
-This will provide a useful list that the author can reference when populating the necesary software components:
-![SoftwareComponentList](./images/training-getstarted-csolution-list-components-ping.png)
-These lwip components are added to the cProject to provide the necesary files.
+This will provide a useful list that the author can reference when populating the necesary software components:  
 
-#### Pack and Component Dependencies
-Once the cProject has an initial list of components, the cbuild tool can be used to verify the correct names were used.  The tool output will also identify any co-dependencies that a component or pack may have.  These can be added to the cProject list to remove the notifications.
+![SoftwareComponentList](./images/training-getstarted-csolution-list-components-ping.png)
+
+These lwip components can be added to the cProject.yml file to provide the necesary software components.  The author of the cSolution project may have knowledge of the example to exclude unnecesary/conflicting components.  
+
+#### Resolving Pack and Component Dependencies
+Once the cProject.yml file has an initial list of components, the CMSIS Toolbox cbuild command can be used to verify the correct names were used.  The tool output will also identify any co-dependencies that a component or pack may have.  These can be added to the cProject lists to eliminate the notifications.
 
 The cProject and cSolution files need to be built using the CMSIS-Toolbox tools.  
 Before the cBuild tool can work with the project, you must convert the cSolution.yml  
@@ -386,7 +441,9 @@ c:\..\cbuild example.csolution.yml
 
 The first error shows that "No such file or directory" exists for fsl_silicon_id.h.  
 This can be used with the csolution list components to locate any missing files.
+
 ![MissingSiliconId](./images/training-getstarted-csolution-list-components-missing-silicon-id.png)
+
 This component is added to cProject component list.  
 ```yaml
     - component: NXP::Device:SDK Drivers:silicon_id
