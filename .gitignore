@@ -9,3 +9,4 @@ EVKB-RT1050/*
 lwip/*
 RTE/*
 tmp/*
+examples/lwip-httpscli-httpscli-mbedTLS-freertos/lwip/BUILDING
