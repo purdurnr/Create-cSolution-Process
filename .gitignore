@@ -1,6 +1,13 @@
 .clangd
 Create-cSolution-Process.md
 
+examples/freertos-sem/*.cbuild-idx.yml
+examples/freertos-sem/*.cbuild.yml
+examples/freertos-sem/*.cprj
+examples/freertos-sem/EVK-RT1060
+examples/freertos-sem/RTE
+examples/freertos-sem/tmp
+
 examples/lwip-httpscli-mbedTLS-freertos/*.cbuild-idx.yml
 examples/lwip-httpscli-mbedTLS-freertos/*.cbuild.yml
 examples/lwip-httpscli-mbedTLS-freertos/*.cprj
@@ -14,4 +21,3 @@ examples/lwip-ping-freertos/*.cprj
 examples/lwip-ping-freertos/tmp
 examples/lwip-ping-freertos/RTE
 examples/lwip-ping-freertos/EVK-RT1060
-examples/lwip-httpscli-mbedTLS-freertos/RTE/_Release_EVKB-RT1050/Pre_Include_Global.h
