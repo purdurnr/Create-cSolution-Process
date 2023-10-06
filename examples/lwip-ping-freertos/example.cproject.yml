@@ -1,0 +1,126 @@
+---
+project:
+  description: Example Project that uses NXP i.MX RT1050 with lwip, FreeRTOS, and mbedtls to establish a secure http connection.
+
+  linker:
+    - script: armgcc/evkmimxrt1060_lwip_ping_freertos_Debug.ld
+      for-compiler: GCC
+      for-context:
+        - ".debug"
+        - ".Release"
+
+  packs:
+    - pack: NXP::MIMXRT1062_DFP
+    - pack: NXP::EVK-MIMXRT1060_BSP
+    - pack: NXP::LWIP
+    - pack: NXP::FREERTOS-KERNEL  
+    - pack: ARM::CMSIS
+    
+  add-path:
+    - ./source
+    - ./board
+    - ./armgcc    
+ 
+  components:
+    - component: ARM::CMSIS:CORE@5.6.0
+    # - component: Device:Startup
+    - component: NXP::Device:CMSIS:MIMXRT1062_system
+    - component: NXP::Device:CMSIS:MIMXRT1062_header
+    - component: NXP::Board Support:SDK Drivers:evkmimxrt1060 xip
+    # Component
+    - component: NXP::Device:SDK Drivers:lists
+    - component: NXP::Device:SDK Drivers:phy-common
+    - component: NXP::Device:SDK Drivers:phy-device-ksz8081 
+    - component: NXP::Device:SDK Utilities:serial_manager
+    - component: NXP::Device:SDK Utilities:serial_manager_uart
+    - component: NXP::Device:SDK Drivers:lpuart_adapter
+    # Drivers
+    - component: NXP::Device:SDK Drivers:cache
+    - component: NXP::Device:SDK Drivers:clock
+    - component: NXP::Device:SDK Drivers:common
+    - component: NXP::Device:SDK Drivers:enet
+    - component: NXP::Device:SDK Drivers:gpio
+    - component: NXP::Device:SDK Drivers:iomuxc
+    - component: NXP::Device:SDK Drivers:lpuart
+    - component: NXP::Device:SDK Drivers:silicon_id
+    - component: NXP::Device:SDK Drivers:silicon_id_rt10xx        
+    # FreeRTOS
+    - component: NXP::RTOS&FreeRTOS NXP:Core
+    - component: NXP::RTOS&FreeRTOS NXP:freertos template
+    - component: NXP::RTOS&FreeRTOS NXP:TAD extension
+    - component: NXP::RTOS&FreeRTOS NXP:Heap&Heap_3
+    # LWIP
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:httpd
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:httpsrv
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:httpssrv
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:lwiperf           
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:mdns
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:mqtt
+    - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:ping
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:sntp
+    - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:support
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:tcpecho
+    # - component: NXP::Network&lwIP:lwIP TCPIP Application protocols:tcpecho_raw
+    # - component: NXP::Network&lwIP TCPIP Application protocols:udpecho
+    # - component: NXP::Network&lwIP TCPIP Application protocols:udpecho_raw
+    - component: NXP::Network&lwIP:lwIP TCPIP Networking Stack:enet_ethernetif
+    - component: NXP::Network&lwIP:lwIP TCPIP Networking Stack:lwip
+    - component: NXP::Network&lwIP:lwIP TCPIP Networking Stack:template
+
+    # Utilities
+    - component: NXP::Device:SDK Utilities:assert
+    - component: NXP::Device:SDK Utilities:debug_console
+    - component: NXP::Device:SDK Utilities:str
+
+    - component: NXP::Device:SDK Drivers:exception_handling_cm7@1.0.0 
+    - component: NXP::Device:SDK Drivers:flexspi@2.5.0 
+    - component: NXP::Device:SDK Drivers:panic@1.0.0 
+    - component: NXP::Device:SDK Drivers:reset_adapter@1.0.0 
+    - component: NXP::Device:SDK Drivers:rtwdog@2.1.2 
+    - component: NXP::Device:SDK Drivers:src@2.0.1 
+    - component: NXP::Device:SDK Drivers:trng@2.0.15 
+    - component: NXP::Device:SDK Drivers:trng_adapter@1.0.0 
+    - component: NXP::Device:SDK Drivers:wdog@2.1.1 
+    - component: NXP::Device:SDK Drivers:xip_device@2.0.3 
+    - component: NXP::Device:SDK Utilities:MIMXRT1062_linker@1.0.0 
+
+  define:
+    - __NEWLIB__
+    - CPU_MIMXRT1062DVL6A
+    - CPU_MIMXRT1062DVL6A_cm7
+    - FSL_FEATURE_PHYKSZ8081_USE_RMII50M_MODE
+    - _POSIX_SOURCE
+    - SDK_DEBUGCONSOLE : 1
+    - XIP_EXTERNAL_FLASH : 1
+    - XIP_BOOT_HEADER_ENABLE : 1
+    - USE_RTOS : 1
+    - PRINTF_ADVANCED_ENABLE : 1
+    - LWIP_DISABLE_PBUF_POOL_SIZE_SANITY_CHECKS : 1
+    - SERIAL_PORT_TYPE_UART : 1
+    - SDK_OS_FREE_RTOS
+    - MCUXPRESSO_SDK
+    - CR_INTEGER_PRINTF
+    - PRINTF_FLOAT_ENABLE : 0
+    - __MCUXPRESSO
+    - __USE_CMSIS
+    - DEBUG
+
+  groups:
+    - group: source
+      files:
+        - file: ./source/FreeRTOSConfig.h
+        - file: ./source/lwip_ping_freertos.c
+        - file: ./source/lwipopts.h
+        - file: ./source/semihost_hardfault.h
+        - file: ./source/startup_MIMXRT1062.c        
+
+    - group: board
+      files:
+        - file: board/pin_mux.c
+        - file: board/pin_mux.h
+        - file: board/board.c
+        - file: board/board.h
+        - file: board/clock_config.c
+        - file: board/clock_config.h
+        - file: board/dcd.c
+        - file: board/dcd.h

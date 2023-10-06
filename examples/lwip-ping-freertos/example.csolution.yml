@@ -1,0 +1,31 @@
+---
+solution:
+  created-for: cmsis-toolbox@2.0.0
+  cdefault:
+
+  packs:
+    - pack: NXP::MIMXRT1062_DFP
+    - pack: NXP::EVK-MIMXRT1060_BSP
+    - pack: NXP::FREERTOS-KERNEL  
+    - pack: ARM::CMSIS
+
+  target-types:
+  - type: EVK-RT1060
+    device: NXP::MIMXRT1062DVL6A
+    # board: NXP::EVK-MIMXRT1060
+    compiler: GCC
+
+  output-dirs:
+    outdir: "./$TargetType$/$BuildType$"
+
+  build-types:
+  - type: debug
+    debug: on       # puts in -g3 mode
+    optimize: none
+
+  - type: Release 
+    debug: off
+    optimize: balanced
+
+  projects:
+  - project: example.cproject.yml
