@@ -3,7 +3,7 @@ project:
   description: Example Project that uses NXP i.MX RT1050 with lwip, FreeRTOS, and mbedtls to establish a secure http connection.
 
   linker:
-    - script: C:/GIT/memfault-pack-nxp/examples/armgcc/evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug.ld
+    - script: armgcc/evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug.ld
       for-compiler: GCC
       for-context:
         - ".debug"

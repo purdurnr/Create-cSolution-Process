@@ -57,6 +57,7 @@ default:
         - -Wl,--gc-sections 
         - -Wl,-print-memory-usage 
         - -Wl,--sort-section=alignment 
+        - -L ./armgcc/
         # - -Wl,--cref 
         # - -Map="evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault.map"
         - -mcpu=cortex-m7 

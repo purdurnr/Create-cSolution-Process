@@ -8,8 +8,8 @@
  * MCUXpresso IDE v11.8.0 [Build 1165] [2023-07-26] on Sep 7, 2023, 2:18:37 PM
  */
 
-INCLUDE "C:\GIT\Create-cSolution-Process\examples\armgcc\evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug_library.ld"
-INCLUDE "C:\GIT\Create-cSolution-Process\examples\armgcc\evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug_memory.ld"
+INCLUDE "evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug_library.ld"
+INCLUDE "evkbimxrt1050_lwip_httpscli_mbedTLS_freertos_memfault_Debug_memory.ld"
 
 ENTRY(ResetISR)
 
