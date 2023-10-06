@@ -28,4 +28,4 @@ solution:
     optimize: balanced
 
   projects:
-  - project: example.cproject.yml
+  - project: lwip-ping-freertos.cproject.yml

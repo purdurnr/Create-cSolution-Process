@@ -1,12 +1,12 @@
 .clangd
 Create-cSolution-Process.md
 
-examples/lwip-httpscli-httpscli-mbedTLS-freertos/*.cbuild-idx.yml
-examples/lwip-httpscli-httpscli-mbedTLS-freertos/*.cbuild.yml
-examples/lwip-httpscli-httpscli-mbedTLS-freertos/*.cprj
-examples/lwip-httpscli-httpscli-mbedTLS-freertos/EVKB-RT1050/*
-examples/lwip-httpscli-httpscli-mbedTLS-freertos/RTE/*
-examples/lwip-httpscli-httpscli-mbedTLS-freertos/tmp
+examples/lwip-httpscli-mbedTLS-freertos/*.cbuild-idx.yml
+examples/lwip-httpscli-mbedTLS-freertos/*.cbuild.yml
+examples/lwip-httpscli-mbedTLS-freertos/*.cprj
+examples/lwip-httpscli-mbedTLS-freertos/EVKB-RT1050/*
+examples/lwip-httpscli-mbedTLS-freertos/RTE/*
+examples/lwip-httpscli-mbedTLS-freertos/tmp
 
 examples/lwip-ping-freertos/*.cbuild-idx.yml
 examples/lwip-ping-freertos/*.cbuild.yml
@@ -14,3 +14,4 @@ examples/lwip-ping-freertos/*.cprj
 examples/lwip-ping-freertos/tmp
 examples/lwip-ping-freertos/RTE
 examples/lwip-ping-freertos/EVK-RT1060
+examples/lwip-httpscli-mbedTLS-freertos/RTE/_Release_EVKB-RT1050/Pre_Include_Global.h
