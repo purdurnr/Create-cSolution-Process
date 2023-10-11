@@ -1,0 +1,109 @@
+project:
+# A project translates into one executable or library
+
+  linker:
+    - script: ./armgcc/AFE_demo_Debug.ld
+      for-compiler: GCC
+      for-context:
+        - ".Debug"
+    - script: ./armgcc/AFE_demo_Release.ld
+      for-compiler: GCC
+      for-context:
+        - ".Release"    
+
+# List the packs that define the device and/or board
+  packs:
+    - pack: ARM::CMSIS         # The CMSIS base software pack
+    - pack: NXP::LPC54628_DFP    
+    - pack: LPCXpresso54628_BSP     
+    - pack: NXP::N-AFE   # Pack containing NAFE drivers for 
+
+  define:
+    - CPU_LPC54628J512ET180 : 1
+    - CPU_LPC54628J512ET180_cm4
+    - CPU_LPC54628
+    - __USE_CMSIS
+    - MCUXPRESSO_SDK
+    - SDK_DEBUGCONSOLE : 1
+    - CR_INTEGER_PRINTF_NO
+    - PRINTF_FLOAT_ENABLE : 1
+    - __MCUXPRESSO
+    - DEBUG
+    - __NEWLIB__
+
+  groups:
+    - group: source
+      files: 
+        - file: ./source/main.c
+        - file: ./source/semihost_hardfault.c
+        - file: ./source/startup_lpc54628.c        
+
+    - group: board
+      files:
+        - file: board/pin_mux.c
+        - file: board/pin_mux.h
+        - file: board/board.c
+        - file: board/board.h
+        - file: board/clock_config.c
+        - file: board/clock_config.h
+
+  add-path:
+    - ./source
+    - ./board
+    - ./armgcc
+
+#   - group: MyGroup
+#     files: 
+#       - file: MyFile2.cpp
+
+# A software component is a re-usable unit that may be configurable
+  components:                  # List components to use for your application
+    - component: CMSIS:CORE    # The CMSIS-Core component used in most projects
+    # - component: Device:Startup
+    - component: NXP::Device:CMSIS:LPC54628_system
+    - component: NXP::Device:CMSIS:LPC54628_header
+    - component: NXP::Device:SDK Drivers:lpc54xxx
+                 
+
+    # Component
+    - component: NXP::Device:SDK Drivers:lists 
+    - component: NXP::Device:SDK Drivers:usart_adapter    
+
+    # Drivers
+    - component: NXP::Device:SDK Drivers:clock
+    - component: NXP::Device:SDK Drivers:common
+    - component: NXP::Device:SDK Drivers:ctimer
+    - component: NXP::Device:SDK Drivers:dma   
+    - component: NXP::Device:SDK Drivers:debugconsole
+    - component: NXP::Device:SDK Drivers:log      
+    - component: NXP::Device:SDK Drivers:emc
+    - component: NXP::Device:SDK Drivers:flexcomm             
+    - component: NXP::Device:SDK Drivers:gpio
+    - component: NXP::Device:SDK Drivers:inputmux
+    - component: NXP::Device:SDK Drivers:inputmux_connections    
+    - component: NXP::Device:SDK Drivers:iocon
+    - component: NXP::Device:SDK Drivers:mflash_common    
+    - component: NXP::Device:SDK Drivers:pint
+    - component: NXP::Device:SDK Drivers:power    
+    - component: NXP::Device:SDK Drivers:reset
+    - component: NXP::Device:SDK Drivers:spi
+    - component: NXP::Device:SDK Drivers:spifi    
+    - component: NXP::Device:SDK Drivers:usart
+    # - component: NXP::Device:SDK Drivers:common                
+    # - component: NXP::Device:SDK Drivers:lpuart
+
+    # Utilities
+    - component: NXP::Device:SDK Utilities:assert
+    - component: NXP::Device:SDK Utilities:serial_manager
+    - component: NXP::Device:SDK Utilities:debug_console
+    - component: NXP::Device:SDK Utilities:str    
+    - component: NXP::Device:SDK Utilities:serial_manager_uart
+    
+
+    # NAFE
+    - component: NXP::Signal Chain&NXP:N-AFE:Device&NAFE13388@1.8.0
+    
+
+# A software layer is a collection of pre-configured source files or components
+# layers:                      # List software layers to use for your application
+#   - layer: MyLayer.clayer.yml

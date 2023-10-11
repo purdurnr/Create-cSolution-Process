@@ -1,0 +1,66 @@
+default:
+
+  # compiler: AC6
+  compiler: GCC
+
+  misc:
+    - for-compiler: AC6
+      C-CPP:
+        - -ffunction-sections
+        - -Wno-macro-redefined
+        - -Wno-pragma-pack
+        - -Wno-parentheses-equality
+        - -Wno-license-management
+      C:
+        - -std=gnu11
+      ASM:
+        - -masm=auto
+      Link:
+        - --entry=Reset_Handler
+        - --map
+        - --info summarysizes
+        - --diag_suppress=L6314W
+
+    - for-compiler: GCC
+      C:
+        - -std=gnu99 
+        - -O0 
+        - -fno-common 
+        - -g3 
+        # - -c 
+        - -ffunction-sections 
+        - -fdata-sections 
+        - -ffreestanding 
+        - -fno-builtin 
+        # - -fmacro-prefix-map="$(<D)/"= 
+        - -fmerge-constants
+        - -mcpu=cortex-m4
+        - -mfpu=fpv4-sp-d16 
+        - -mfloat-abi=hard 
+        - -mthumb 
+        - -fstack-usage
+        - -specs=nano.specs
+
+      ASM:
+        - -c 
+        - -x assembler-with-cpp 
+        - -g3 
+        - -mcpu=cortex-m4 
+        - -mfpu=fpv4-sp-d16 
+        - -mfloat-abi=hard 
+        - -mthumb 
+        - -specs=nano.specs
+
+      Link:
+        - -nostdlib     #No startup or default libs
+
+        - -Wl,--gc-sections
+        - -Wl,-print-memory-usage
+        - -Wl,--sort-section=alignment
+        - -L ./armgcc/
+        #- -Map=&quot;${BuildArtifactFileBaseName}.map&quot;
+        #- -Wl,--cref
+        - -mcpu=cortex-m4 
+        - -mfpu=fpv4-sp-d16 
+        - -mfloat-abi=hard 
+        - -mthumb 

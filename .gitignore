@@ -21,3 +21,10 @@ examples/lwip-ping-freertos/*.cprj
 examples/lwip-ping-freertos/tmp
 examples/lwip-ping-freertos/RTE
 examples/lwip-ping-freertos/EVK-RT1060
+
+examples/NAFE13388-demo/out
+examples/NAFE13388-demo/tmp
+examples/NAFE13388-demo/RTE
+
+
+

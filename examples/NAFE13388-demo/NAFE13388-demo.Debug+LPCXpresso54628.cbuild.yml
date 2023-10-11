@@ -1,0 +1,331 @@
+build:
+  generated-by: csolution version 2.0.0-dev2
+  solution: NAFE13388-demo.csolution.yml
+  project: NAFE13388-demo.cproject.yml
+  context: NAFE13388-demo.Debug+LPCXpresso54628
+  compiler: GCC
+  device: NXP::LPC54628J512ET180
+  processor:
+    fpu: on
+    endian: little
+  packs:
+    - pack: ARM::CMSIS@5.9.0
+      path: ${CMSIS_PACK_ROOT}/ARM/CMSIS/5.9.0
+    - pack: NXP::LPC54628_DFP@17.0.0
+      path: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0
+    - pack: NXP::N-AFE@1.0.0
+      path: ${CMSIS_PACK_ROOT}/NXP/N-AFE/1.0.0
+  optimize: none
+  debug: on
+  misc:
+    ASM:
+      - -c
+      - -x assembler-with-cpp
+      - -g3
+      - -mcpu=cortex-m4
+      - -mfpu=fpv4-sp-d16
+      - -mfloat-abi=hard
+      - -mthumb
+      - -specs=nano.specs
+    C:
+      - -std=gnu99
+      - -O0
+      - -fno-common
+      - -g3
+      - -ffunction-sections
+      - -fdata-sections
+      - -ffreestanding
+      - -fno-builtin
+      - -fmerge-constants
+      - -mcpu=cortex-m4
+      - -mfpu=fpv4-sp-d16
+      - -mfloat-abi=hard
+      - -mthumb
+      - -fstack-usage
+      - -specs=nano.specs
+    Link:
+      - -nostdlib
+      - -Wl,--gc-sections
+      - -Wl,-print-memory-usage
+      - -Wl,--sort-section=alignment
+      - -L ./armgcc/
+      - -mcpu=cortex-m4
+      - -mfpu=fpv4-sp-d16
+      - -mfloat-abi=hard
+      - -mthumb
+  define:
+    - CPU_LPC54628J512ET180: 1
+    - CPU_LPC54628J512ET180_cm4
+    - CPU_LPC54628
+    - __USE_CMSIS
+    - MCUXPRESSO_SDK
+    - SDK_DEBUGCONSOLE: 1
+    - CR_INTEGER_PRINTF_NO
+    - PRINTF_FLOAT_ENABLE: 1
+    - __MCUXPRESSO
+    - DEBUG
+    - __NEWLIB__
+    - CPU_LPC54628J512ET180
+    - _RTE_
+  add-path:
+    - ./source
+    - ./board
+    - ./armgcc
+    - RTE/_Debug_LPCXpresso54628
+    - ${CMSIS_PACK_ROOT}/ARM/CMSIS/5.9.0/CMSIS/Core/Include
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/flash/mflash
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/flash/mflash/lpc54xxx
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/lists
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/log
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/serial_manager
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/uart
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/utilities/debug_console
+    - ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/utilities/str
+    - ${CMSIS_PACK_ROOT}/NXP/N-AFE/1.0.0/middleware/n-afe/applications
+    - ${CMSIS_PACK_ROOT}/NXP/N-AFE/1.0.0/middleware/n-afe/devices
+    - ${CMSIS_PACK_ROOT}/NXP/N-AFE/1.0.0/middleware/n-afe/devices/nafe13388
+  output-dirs:
+    intdir: tmp/NAFE13388-demo/LPCXpresso54628/Debug
+    outdir: out/NAFE13388-demo/LPCXpresso54628/Debug
+    rtedir: RTE
+  output:
+    - type: elf
+      file: NAFE13388-demo.elf
+  components:
+    - component: ARM::CMSIS:CORE@5.6.0
+      condition: ARMv6_7_8-M Device
+      from-pack: ARM::CMSIS@5.9.0
+      selected-by: CMSIS:CORE
+    - component: NXP::Device:CMSIS:LPC54628_header@1.0.0
+      condition: device.LPC54628_CMSIS.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:CMSIS:LPC54628_header
+    - component: NXP::Device:CMSIS:LPC54628_system@1.0.0
+      condition: device.LPC54628_system.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:CMSIS:LPC54628_system
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/system_LPC54628.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:clock@2.2.0
+      condition: driver.clock.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:clock
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_clock.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:common@2.4.0
+      condition: driver.common.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:common
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_common.c
+          category: sourceC
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_common_arm.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:ctimer@2.3.1
+      condition: driver.ctimer.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:ctimer
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_ctimer.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:debugconsole@1.0.0
+      condition: component.log.backend.debugconsole.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:debugconsole
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/log/fsl_component_log_backend_debugconsole.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:dma@2.5.0
+      condition: driver.lpc_dma.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:dma
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_dma.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:emc@2.0.4
+      condition: driver.emc.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:emc
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_emc.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:flexcomm@2.0.2
+      condition: driver.flexcomm.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:flexcomm
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_flexcomm.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:gpio@2.1.7
+      condition: driver.lpc_gpio.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:gpio
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_gpio.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:inputmux@2.0.5
+      condition: driver.inputmux.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:inputmux
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_inputmux.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:inputmux_connections@2.0.1
+      condition: driver.inputmux_connections.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:inputmux_connections
+    - component: NXP::Device:SDK Drivers:iocon@2.2.0
+      condition: driver.lpc_iocon.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:iocon
+    - component: NXP::Device:SDK Drivers:lists@1.0.0
+      condition: component.lists.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:lists
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/lists/fsl_component_generic_list.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:log@1.0.0
+      condition: component.log.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:log
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/log/fsl_component_log.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:lpc54xxx@1.0.0
+      condition: component.mflash.lpc54xxx.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:lpc54xxx
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/flash/mflash/lpc54xxx/mflash_drv.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:mflash_common@1.0.0
+      condition: component.mflash.common.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:mflash_common
+    - component: NXP::Device:SDK Drivers:pint@2.1.11
+      condition: driver.pint.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:pint
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_pint.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:power@2.0.0
+      condition: driver.power.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:power
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_power.c
+          category: sourceC
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/gcc/libpower_hardabi.a
+          category: library
+    - component: NXP::Device:SDK Drivers:reset@2.1.2
+      condition: driver.reset.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:reset
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_reset.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:spi@2.3.1
+      condition: driver.flexcomm_spi.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:spi
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_spi.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:spifi@2.0.3
+      condition: driver.spifi.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:spifi
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_spifi.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:usart@2.8.2
+      condition: driver.flexcomm_usart.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:usart
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/drivers/fsl_usart.c
+          category: sourceC
+    - component: NXP::Device:SDK Drivers:usart_adapter@1.0.0
+      condition: component.usart_adapter.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Drivers:usart_adapter
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/uart/fsl_adapter_usart.c
+          category: sourceC
+    - component: NXP::Device:SDK Utilities:assert@1.0.0
+      condition: utility.assert.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Utilities:assert
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/utilities/fsl_assert.c
+          category: sourceC
+    - component: NXP::Device:SDK Utilities:debug_console@1.0.1
+      condition: utility.debug_console.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Utilities:debug_console
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/utilities/debug_console/fsl_debug_console.c
+          category: sourceC
+    - component: NXP::Device:SDK Utilities:serial_manager@1.0.1
+      condition: component.serial_manager.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Utilities:serial_manager
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/serial_manager/fsl_component_serial_manager.c
+          category: sourceC
+    - component: NXP::Device:SDK Utilities:serial_manager_uart@1.0.0
+      condition: component.serial_manager_uart.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Utilities:serial_manager_uart
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/components/serial_manager/fsl_component_serial_port_uart.c
+          category: sourceC
+    - component: NXP::Device:SDK Utilities:str@1.0.0
+      condition: utility.str.condition_id
+      from-pack: NXP::LPC54628_DFP@17.0.0
+      selected-by: NXP::Device:SDK Utilities:str
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/LPC54628_DFP/17.0.0/devices/LPC54628/utilities/str/fsl_str.c
+          category: sourceC
+    - component: NXP::Signal Chain&NXP:N-AFE:Device&NAFE13388@1.8.0
+      from-pack: NXP::N-AFE@1.0.0
+      selected-by: NXP::Signal Chain&NXP:N-AFE:Device&NAFE13388@1.8.0
+      files:
+        - file: ${CMSIS_PACK_ROOT}/NXP/N-AFE/1.0.0/middleware/n-afe/applications/ring_buffer.c
+          category: sourceC
+        - file: ${CMSIS_PACK_ROOT}/NXP/N-AFE/1.0.0/middleware/n-afe/devices/nafe13388/NAFE13388.c
+          category: sourceC
+  linker:
+    script: armgcc/AFE_demo_Debug.ld
+  groups:
+    - group: source
+      files:
+        - file: ./source/main.c
+          category: sourceC
+        - file: ./source/semihost_hardfault.c
+          category: sourceC
+        - file: ./source/startup_lpc54628.c
+          category: sourceC
+    - group: board
+      files:
+        - file: board/pin_mux.c
+          category: sourceC
+        - file: board/pin_mux.h
+          category: header
+        - file: board/board.c
+          category: sourceC
+        - file: board/board.h
+          category: header
+        - file: board/clock_config.c
+          category: sourceC
+        - file: board/clock_config.h
+          category: header
+  constructed-files:
+    - file: RTE/_Debug_LPCXpresso54628/RTE_Components.h
+      category: header

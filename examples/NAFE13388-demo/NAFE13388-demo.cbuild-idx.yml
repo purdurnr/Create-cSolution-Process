@@ -1,0 +1,13 @@
+build-idx:
+  generated-by: csolution version 2.0.0-dev2
+  cdefault: cdefault.yml
+  csolution: NAFE13388-demo.csolution.yml
+  cprojects:
+    - cproject: NAFE13388-demo.cproject.yml
+  cbuilds:
+    - cbuild: NAFE13388-demo.Debug+LPCXpresso54628.cbuild.yml
+      project: NAFE13388-demo
+      configuration: .Debug+LPCXpresso54628
+    - cbuild: NAFE13388-demo.Release+LPCXpresso54628.cbuild.yml
+      project: NAFE13388-demo
+      configuration: .Release+LPCXpresso54628
