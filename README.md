@@ -111,7 +111,7 @@ The Linker flags in the cDefault.yml file should resemble the following:
 >__NOTE__: The -Map and --cref flags are not used with the cBuild tools.  They are included but commented out.
 
 ### 3.3 Compiler and Assembler Options
-The Comiler and Assembler options for a cSolution project are listed in the cDefault.yml.  
+The Compiler and Assembler options for a cSolution project are listed in the cDefault.yml.  
 The settings for the Compiler and Assembler can be extracted using the Project Settings UI in MCUXpresso IDE.  
 
 Access the settings under Project Explorer, right click on the desired project and select Properties.  
